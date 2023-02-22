@@ -148,6 +148,21 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Message'
+  /api/activites/notifications:
+    get:
+      description: 'Return a feed of activity for all the people I follow'
+      tags:
+        - activites 
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of activites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
 
 components:
   schemas:
