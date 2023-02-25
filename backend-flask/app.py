@@ -14,7 +14,32 @@ from services.create_message import *
 from services.show_activity import *
 from services.notifications_activities import *
 
+## Below are the HoneyComb OTEL stuff!
+#HONEYCOMB------<>
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+#HONEYCOMB------</>
+
+#HONEYCOMB------<>
+# Initialize tracing and an exporter that can send data to Honeycomb
+provider = TracerProvider()
+processor = BatchSpanProcessor(OTLPSpanExporter())
+provider.add_span_processor(processor)
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer(__name__)
+#HONEYCOMB------</>
+
+
+
 app = Flask(__name__)
+#HONEYCOMB------<>
+FlaskInstrumentor().instrument_app(app)
+RequestsInstrumentor().instrument()
+#HONEYCOMB------</>
 frontend = os.getenv('FRONTEND_URL')
 backend = os.getenv('BACKEND_URL')
 origins = [frontend, backend]
